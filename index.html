@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>My first three.js app</title>
-		<style>
-			body { margin: 0; }
-		</style>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Procedural Terrain Generation</title>
+    <link rel="stylesheet" href="css/style.css">
     <script type="module">
       import * as THREE from './scripts/three.module.js';
     </script>
-	</head>
-	<body>
-		<script type="module" src="/main.js"></script>
+</head>
 
-	</body>
+<body>
+    <div id="app">
+        <div id="header-container">
+            <h1>Procedural Terrain Generation</h1>
+        </div>
+        <div class="settings-container">
+            <div class="setting">
+                <h3>Shading</h3>
+                <div class="setting-item-container">
+                    <div id="shadingPhong" class="setting-item inactive">[C] Phong</div>
+                    <div id="shadingTextured" class="setting-item inactive">[V] Textured</div>
+                </div>
+            </div>
+        </div>
+        <div id="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+    <noscript>You need to enable JavaScript to view the full site.</noscript>
+    <script type="module" src="js/main.js"></script>
+</body>
+
 </html>
