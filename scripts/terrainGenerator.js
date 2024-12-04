@@ -1,14 +1,12 @@
 import { ImprovedNoise } from './ImprovedNoise.js';
 import * as THREE from './three.module.js';
 
-export function generateTerrainGeometry(width, depth, segments, scale, heightMultiplier) {
+export function generateTerrainGeometry(width, depth, segments, scale, heightMultiplier, seed) {
     const geometry = new THREE.PlaneGeometry(width, depth, segments, segments);
     geometry.rotateX(-Math.PI / 2);
 
     const perlin = new ImprovedNoise();
     const position = geometry.attributes.position;
-
-    const seed = Math.random() * 100;
 
     for (let i = 0; i < position.count; i++) {
         const x = position.getX(i) / scale;

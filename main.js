@@ -20,13 +20,15 @@ const terrainDepth = 100;
 const segmentCount = 100;
 const scale = 10;
 const heightMultiplier = 10;
+const seed = Math.random();
 
 const terrainGeometry = generateTerrainGeometry(
     terrainWidth,
     terrainDepth,
     segmentCount,
     scale,
-    heightMultiplier
+    heightMultiplier,
+    seed
 );
 
 const terrainMaterial = new THREE.MeshStandardMaterial({
