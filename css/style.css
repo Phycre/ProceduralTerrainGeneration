@@ -79,9 +79,13 @@ a {
 
 
 #canvas {
-    aspect-ratio: 16 / 9;
-    height: 60vh;
+    width: 100%; /* Ensure the canvas stretches fully inside its container */
+    height: 100%; /* Match the container's height */
+    aspect-ratio: auto; /* Allow the canvas to resize based on its container */
+    display: block; /* Prevent unwanted margins caused by inline-block behavior */
+}
 
-    overflow: scroll;
-    background-color: white;
+#canvas-container {
+  width: 100%;
+  height: 60vh;
 }

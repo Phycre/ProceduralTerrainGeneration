@@ -1,11 +1,19 @@
 import * as THREE from './scripts/three.module.js';
 import { generateTerrainGeometry } from './scripts/terrainGenerator.js';
 
+//get dom element and set Three.js canvas to element
+const container = document.getElementById('canvas-container');
+const canvas = document.getElementById('canvas');
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+const camera = new THREE.PerspectiveCamera(
+    75,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    1000
+);
+
+const renderer = new THREE.WebGLRenderer({ canvas });
+renderer.setSize(container.clientWidth, container.clientHeight);
 
 const terrainWidth = 100;
 const terrainDepth = 100;
@@ -13,7 +21,13 @@ const segmentCount = 100;
 const scale = 10;
 const heightMultiplier = 10;
 
-const terrainGeometry = generateTerrainGeometry(terrainWidth, terrainDepth, segmentCount, scale, heightMultiplier);
+const terrainGeometry = generateTerrainGeometry(
+    terrainWidth,
+    terrainDepth,
+    segmentCount,
+    scale,
+    heightMultiplier
+);
 
 const terrainMaterial = new THREE.MeshStandardMaterial({
     color: 0x88c070,
