@@ -6,7 +6,7 @@
     <title>Procedural Terrain Generation</title>
     <link rel="stylesheet" href="css/style.css">
     <script type="module">
-      import * as THREE from './scripts/three.module.js';
+        import * as THREE from './scripts/three.module.js';
     </script>
 </head>
 
@@ -17,10 +17,10 @@
         </div>
         <div class="settings-container">
             <div class="setting">
-                <h3>Shading</h3>
+                <h3>Seed</h3>
                 <div class="setting-item-container">
-                    <div id="shadingPhong" class="setting-item inactive">[C] Phong</div>
-                    <div id="shadingTextured" class="setting-item inactive">[V] Textured</div>
+                    <input type="text" id="seedInput" placeholder="Enter seed">
+                    <button id="generateButton">Generate</button>
                 </div>
             </div>
         </div>
