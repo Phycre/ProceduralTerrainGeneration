@@ -222,8 +222,8 @@ window.addEventListener('keydown', (event) => {
 generateButton.addEventListener('click', () => {
     const inputSeed = seedInput.value.trim();
     seed = inputSeed ? parseFloat(inputSeed) : Math.random();
-    width = parseInt(terrainWidthInput.value);
-    depth = parseInt(terrainDepthInput.value);
+    width = terrainWidthInput.value ? parseInt(terrainWidthInput.value) : 100;
+    depth = terrainDepthInput.value ? parseInt(terrainDepthInput.value) : 100;
     createTerrain(seed);
 });
 
