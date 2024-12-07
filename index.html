@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>My first three.js app</title>
-		<style>
-			body { margin: 0; }
-		</style>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Procedural Terrain Generation</title>
+    <link rel="stylesheet" href="css/style.css">
     <script type="module">
         import * as THREE from './scripts/three.module.js';
     </script>
@@ -18,13 +17,22 @@
         </div>
         <div class="settings-container">
             <div class="setting">
-                <h3>Seed</h3>
+                <h3>Settings</h3>
                 <div class="setting-item-container">
+                    <input type="text" id="terrainWidth" placeholder="Enter width">
+                    <input type="text" id="terrainDepth" placeholder="Enter depth">
                     <input type="text" id="seedInput" placeholder="Enter seed">
                     <button id="generateButton">Generate</button>
                 </div>
             </div>
         </div>
+        <div class = "Instructions">
+            <h3>Instructions</h3>
+            <p>W - Move Forward</p>
+            <p>S - Move Backward</p>
+            <p>A - Move Left</p>
+            <p>D - Move Right</p>
+        </div>  
         <div id="canvas-container">
             <canvas id="canvas"></canvas>
         </div>
