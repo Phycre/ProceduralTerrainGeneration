@@ -58,9 +58,9 @@ export default class TreeOptions {
         // Length of each branch level
         length: {
           0: 35,
-          1: 20,
-          2: 10,
-          3: 1,
+          1: 30,
+          2: 15,
+          3: 3,
         },
   
         // Radius of each branch level
@@ -97,7 +97,7 @@ export default class TreeOptions {
         // Taper at each branch level
         taper: {
           0: 0.5,
-          1: 0.5,
+          1: 0.4,
           2: 0.5,
           3: 0.5,
         },

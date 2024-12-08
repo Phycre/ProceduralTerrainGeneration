@@ -12,8 +12,10 @@ export class Tree extends THREE.Group{
         this.name = 'Tree';
         this.branchesMesh = new THREE.Mesh();
         this.leavesMesh = new THREE.Mesh();
+        this.ornamentsMesh = new THREE.Mesh();
         this.add(this.branchesMesh);
         this.add(this.leavesMesh);
+        this.add(this.ornamentsMesh);
         this.options = options;
 
         /**@type {Branch[]} */
@@ -39,6 +41,12 @@ export class Tree extends THREE.Group{
           indices: [],
           uvs: [],
         };
+
+        this.ornaments = {
+          verts: [],
+          normals: [],
+          indices:  [],
+        }
 
         this.branchQueue.push(
           new Branch(
@@ -182,7 +190,7 @@ export class Tree extends THREE.Group{
         );
       } else {
         this.generateLeaf(lastSection.origin, lastSection.orientation);
-      } //TODO: else gen leaf
+      } 
 
       if (branch.level === this.options.branch.levels) {
         this.generateLeaves(sections);
@@ -396,10 +404,52 @@ export class Tree extends THREE.Group{
       };
   
       createLeaf(0);
-      // if (this.options.leaves.billboard === Billboard.Double) {
-      //   createLeaf(Math.PI / 2);
-      // }
+      //this.createOrnament(origin);
     }
+
+    /**@param {THREE.Vector3} origin*/
+    // createOrnament(origin){
+    //   let radius = 5
+    //   origin.addVectors(origin, new THREE.Vector3(0, -10, 0));
+    //   let top = new THREE.Vector3(0, -radius, 0);
+    //   top.addVectors(origin, top);
+    //   let bottom = new THREE.Vector3(0, radius, 0);
+    //   bottom.addVectors(origin, bottom);
+    //   let lf = new THREE.Vector3(-radius, 0, radius);
+    //   lf.addVectors(origin, lf);
+    //   let rf = new THREE.Vector3(radius, 0, radius);
+    //   rf.addVectors(origin, rf);
+    //   let lr = new THREE.Vector3(-radius, 0, -radius);
+    //   lr.addVectors(origin, lr);
+    //   let rr = new THREE.Vector3(radius, 0, -radius);
+    //   rr.addVectors(origin, rr);
+
+    //   this.ornaments.verts.push(...top, ...bottom, ...lf, ...rf, ...lr, ...rr);
+    //   this.ornaments.indices.push(1, 3, 4, 1, 4, 6, 1, 6, 5, 1, 5, 3);
+    //   this.ornaments.indices.push(2, 3, 4, 2, 4, 6, 2, 6, 5, 2, 5, 3);
+
+    //   const g = new THREE.BufferGeometry();
+    //   g.setAttribute(
+    //     'position',
+    //     new THREE.BufferAttribute(new Float32Array(this.ornaments.verts), 3),
+    //   );
+    //   g.setIndex(
+    //     new THREE.BufferAttribute(new Uint16Array(this.ornaments.indices), 1),
+    //   );
+    //   g.computeVertexNormals();
+    //   g.computeBoundingSphere();
+
+    //   let mat = new THREE.MeshBasicMaterial({color : new THREE.Color(0xed1909)})
+
+    //   this.ornamentsMesh.geometry.dispose();
+    //   this.ornamentsMesh.geometry = g;
+    //   this.ornamentsMesh.material.dispose();
+    //   this.ornamentsMesh.material = mat;
+    //   this.ornamentsMesh.castShadow = true;
+    //   this.ornamentsMesh.receiveShadow = true;
+
+
+    // }
 
     generateBranchIndices(indexOffset, branch) {
       // Build geometry each section of the branch (cylinder without end caps)
