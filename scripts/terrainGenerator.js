@@ -1,6 +1,7 @@
 import { ImprovedNoise } from './ImprovedNoise.js';
 import * as THREE from './three.module.js';
 
+
 export function generateTerrainGeometry(width, depth, segments, scale, heightMultiplier, seed) {
     const geometry = new THREE.PlaneGeometry(width, depth, segments, segments);
     geometry.rotateX(-Math.PI / 2);
@@ -9,35 +10,39 @@ export function generateTerrainGeometry(width, depth, segments, scale, heightMul
     const position = geometry.attributes.position;
 
     // FBM function for more realistic terrain
-    // https://iquilezles.org/articles/fbm/
+    //https://iquilezles.org/articles/fbm/
+
     function fbmNoise(x, z, seed, octaves, persistence, lacunarity) {
         let total = 0;
-        let frequency = 1;
         let amplitude = 1;
+        let frequency = 1;
         let maxValue = 0;
 
         for (let i = 0; i < octaves; i++) {
-            total += perlin.noise(x * frequency, z * frequency, seed) * amplitude;
-            maxValue += amplitude;
+            const nx = x * frequency;
+            const nz = z * frequency;
+            total += perlin.noise(nx, 0, nz + seed) * amplitude;
 
+            maxValue += amplitude;
             amplitude *= persistence;
             frequency *= lacunarity;
         }
 
-        return total / maxValue; 
+        return total / maxValue; // Normalize
     }
 
     for (let i = 0; i < position.count; i++) {
-        const x = position.getX(i) / scale; 
+        const x = position.getX(i) / scale;
         const z = position.getZ(i) / scale;
 
-        const baseHeight = fbmNoise(x, z, seed, 4, 0.5, 2.0); // Octaves, Persistence, Lacunarity
+        const baseHeight = fbmNoise(x, z, seed, 8, 0.5, 2.0); // Octaves, Persistence, Lacunarity
 
-        const ridgeHeight = 1.0 - Math.abs(baseHeight); 
-        // Blend FBM and ridge
-        const combinedHeight = THREE.MathUtils.lerp(baseHeight, ridgeHeight, 0.3); 
+        const ridgeHeight = 1.0 - Math.abs(baseHeight);
+        const valleyHeight = Math.sin(x * 0.5) * Math.cos(z * 0.5);
 
-        const finalHeight = combinedHeight * heightMultiplier;
+        const combinedHeight = THREE.MathUtils.lerp(baseHeight, ridgeHeight, 0.3) + 0.1 * valleyHeight;
+
+        const finalHeight = combinedHeight * 50;
 
         position.setY(i, finalHeight);
     }
@@ -47,3 +52,4 @@ export function generateTerrainGeometry(width, depth, segments, scale, heightMul
 
     return geometry;
 }
+
