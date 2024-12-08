@@ -8,6 +8,7 @@ export function generateTerrainGeometry(width, depth, segments, scale, heightMul
 
     const perlin = new ImprovedNoise();
     const position = geometry.attributes.position;
+    const SMOOTHING_FACTOR = 0.7;
 
     // FBM function for more realistic terrain
     //https://iquilezles.org/articles/fbm/
@@ -31,6 +32,35 @@ export function generateTerrainGeometry(width, depth, segments, scale, heightMul
         return total / maxValue; // Normalize
     }
 
+    function smoothTerrain(position, segments, smoothingFactor) {
+        const smoothedHeights = new Float32Array(position.count);
+        
+        for (let i = 0; i < position.count; i++) {
+            const x = position.getX(i);
+            const z = position.getZ(i);
+            let neighborHeightSum = 0;
+            let neighborCount = 0;
+
+            //avg all neighbors
+            for (let dx = -1; dx <= 1; dx++) {
+                for (let dz = -1; dz <= 1; dz++) {
+                    const nx = i + dx + dz * segments; 
+                    if (nx >= 0 && nx < position.count && nx !== i) {
+                        neighborHeightSum += position.getY(nx);
+                        neighborCount++;
+                    }
+                }
+            }
+
+            const avgHeight = neighborHeightSum / neighborCount;
+            smoothedHeights[i] = THREE.MathUtils.lerp(position.getY(i), avgHeight, smoothingFactor);
+        }
+
+        // Apply the smoothed heights to the geometry
+        for (let i = 0; i < position.count; i++) {
+            position.setY(i, smoothedHeights[i]);
+        }
+    }
     for (let i = 0; i < position.count; i++) {
         const x = position.getX(i) / scale;
         const z = position.getZ(i) / scale;
@@ -46,6 +76,7 @@ export function generateTerrainGeometry(width, depth, segments, scale, heightMul
         position.setY(i, finalHeight);
     }
 
+    smoothTerrain(position, segments, SMOOTHING_FACTOR);
     position.needsUpdate = true;
     geometry.computeVertexNormals();
 
