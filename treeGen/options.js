@@ -44,20 +44,20 @@ export default class TreeOptions {
         // External force encouraging tree growth in a particular direction
         force: {
           direction: { x: 0, y: 1, z: 0 },
-          strength: 0.1,
+          strength: 0.07,
         },
   
         // Amount of curling/twisting at each branch level
         gnarliness: {
-          0: 0.15,
-          1: 0.2,
+          0: 0.01,
+          1: 0.1,
           2: 0.3,
-          3: 0.02,
+          3: 0.4,
         },
   
         // Length of each branch level
         length: {
-          0: 20,
+          0: 35,
           1: 20,
           2: 10,
           3: 1,
@@ -66,17 +66,17 @@ export default class TreeOptions {
         // Radius of each branch level
         radius: {
           0: 1.5,
-          1: 0.7,
+          1: 1,
           2: 0.7,
           3: 0.7,
         },
   
         // Number of sections per branch level
         sections: {
-          0: 4,
-          1: 3,
-          2: 2,
-          3: 1,
+          0: 12,
+          1: 7,
+          2: 4,
+          3: 3,
         },
   
         // Number of radial segments per branch level
@@ -89,25 +89,25 @@ export default class TreeOptions {
   
         // Defines where child branches start forming on the parent branch
         start: {
-          1: 0.4,
+          1: 0.6,
           2: 0.3,
           3: 0.3,
         },
   
         // Taper at each branch level
         taper: {
-          0: 0.7,
-          1: 0.7,
-          2: 0.7,
-          3: 0.7,
+          0: 0.5,
+          1: 0.5,
+          2: 0.5,
+          3: 0.5,
         },
   
         // Amount of twist at each branch level
         twist: {
           0: 0,
           1: 0,
-          2: 0,
-          3: 0,
+          2: 0.2,
+          3: 0.5,
         },
       };
 

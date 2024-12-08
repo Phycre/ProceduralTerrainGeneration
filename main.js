@@ -2,6 +2,9 @@ import * as THREE from './scripts/three.module.js';
 import { generateTerrainGeometry } from './scripts/terrainGenerator.js';
 import { terrainVertexShader, terrainFragmentShader } from './shader/terrainShader.js';
 import { ImprovedNoise } from './scripts/ImprovedNoise.js';
+import { Tree } from './treeGen/tree.js';
+import TreeOptions from './treeGen/options.js';
+import { generateForest } from './scripts/forestGenerator.js';
 
 // load textures
 const textureLoader = new THREE.TextureLoader();
@@ -58,7 +61,7 @@ function updateCamera() {
     camera.lookAt(0, 0, 0);
 }
 
-function generateSplatMap(width, depth, seed) {
+function generateSplatData(width, depth, seed) {
     const size = 256; 
     const data = new Uint8Array(size * size * 4);
 
@@ -90,7 +93,12 @@ function generateSplatMap(width, depth, seed) {
         }
     }
 
-    const splatTexture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+    return data;
+}
+
+function generateSplatMap(data){
+
+    const splatTexture = new THREE.DataTexture(data, 256, 256, THREE.RGBAFormat);
     splatTexture.needsUpdate = true;
     splatTexture.wrapS = THREE.RepeatWrapping;
     splatTexture.wrapT = THREE.RepeatWrapping;
@@ -99,7 +107,8 @@ function generateSplatMap(width, depth, seed) {
     return splatTexture;
 }
 
-let splatMap = generateSplatMap(width, depth, seed);
+let splatData = generateSplatData(width, depth, seed);
+let splatMap = generateSplatMap(splatData);
 
 const terrainMaterial = new THREE.ShaderMaterial({
     vertexShader: terrainVertexShader,
@@ -263,6 +272,13 @@ createTerrain(seed);
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(0, 50, 50).normalize();
 scene.add(light);
+
+//generateForest(terrain, splatData, generateSplatData(width, depth, Math.random()), renderer, scene);
+
+let t = new Tree(new TreeOptions);
+t.generate();
+t.scale.set(5, 5, 5);
+scene.add(t);
 
 updateCamera();
 
