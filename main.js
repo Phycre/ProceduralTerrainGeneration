@@ -41,8 +41,8 @@ const scale = 10;
 const heightMultiplier = 10;
 
 let seed = Math.random();
-let width = 200;
-let depth = 200;
+let width = 500;
+let depth = 500;
 let terrain;
 let base;
 let terrainSides;
