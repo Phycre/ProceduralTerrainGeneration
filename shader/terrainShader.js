@@ -27,12 +27,19 @@ void main() {
     vec4 grassColor = texture2D(grassTex, vUv);
     vec4 rockColor = texture2D(rockTex, vUv);
 
-    vec4 terrainColor = splatColor.r +
+    vec4 terrainColor = splatColor.r * rockColor+
                         splatColor.g * grassColor +
                         splatColor.b * rockColor;
 
-    float heightFactor = (vPosition.y + 5.0) / 30.0; // Normalize height
-    terrainColor.rgb *= heightFactor;
+    // Check if the current y-position is below the threshold
+    if (vPosition.y < 5.9) {
+        //ice
+        terrainColor.rgb = vec3(1.0, 1.0, 1.0); 
+    } else {
+        float heightFactor = (vPosition.y + 5.0) / 10.0; 
+        //add snow
+        terrainColor.rgb = mix(terrainColor.rgb, vec3(1.0), heightFactor * 0.3); 
+    }
 
     gl_FragColor = terrainColor;
 }
