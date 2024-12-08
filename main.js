@@ -1,7 +1,21 @@
 import * as THREE from './scripts/three.module.js';
 import { generateTerrainGeometry } from './scripts/terrainGenerator.js';
-import { Tree } from './treeGen/tree.js';
-import TreeOptions from './treeGen/options.js';
+import { terrainVertexShader, terrainFragmentShader } from './shader/terrainShader.js';
+import { ImprovedNoise } from './scripts/ImprovedNoise.js';
+
+// load textures
+const textureLoader = new THREE.TextureLoader();
+const sandTexture = textureLoader.load('textures/sand.jpg');
+const grassTexture = textureLoader.load('textures/grass.jpg');
+const rockTexture = textureLoader.load('textures/rock.jpg');
+
+[sandTexture, grassTexture, rockTexture].forEach(tex => {
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.repeat.set(10, 10);
+});
 
 const container = document.getElementById('canvas-container');
 const canvas = document.getElementById('canvas');
@@ -17,29 +31,21 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 );
-const renderer = new THREE.WebGLRenderer({ canvas });
+
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setClearColor(0xffffff, 1);
 
 const segmentCount = 100;
 const scale = 10;
 const heightMultiplier = 10;
 
 let seed = Math.random();
-let width = 100;
-let depth = 100;
+let width = 200;
+let depth = 200;
 let terrain;
 let base;
 let terrainSides;
-
-const terrainMaterial = new THREE.MeshStandardMaterial({
-    color: 0x88c070,
-    side: THREE.DoubleSide,
-});
-
-const baseMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    side: THREE.DoubleSide,
-});
 
 let cameraAngle = 0;
 let cameraDistance = 150;
@@ -51,6 +57,72 @@ function updateCamera() {
     camera.position.set(x, cameraHeight, z);
     camera.lookAt(0, 0, 0);
 }
+
+function generateSplatMap(width, depth, seed) {
+    const size = 256; 
+    const data = new Uint8Array(size * size * 4);
+
+    const perlin = new ImprovedNoise();
+    const noiseScale = 0.015;
+
+    for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+            const nx = x * noiseScale;
+            const ny = y * noiseScale;
+            const val = perlin.noise(nx, ny, seed);
+            const noiseVal = (val + 1) / 2.0; 
+
+            // sand (255, 0, 0), grass (0, 255, 0), rock (0, 0, 255)
+            let r=0,g=0,b=0,a=255;
+            if (noiseVal < 0.33) {
+                r = 255;
+            } else if (noiseVal < 0.66) {
+                g = 255;
+            } else {
+                b = 255;
+            }
+
+            const index = (y * size + x) * 4;
+            data[index] = r;
+            data[index+1] = g;
+            data[index+2] = b;
+            data[index+3] = a;
+        }
+    }
+
+    const splatTexture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+    splatTexture.needsUpdate = true;
+    splatTexture.wrapS = THREE.RepeatWrapping;
+    splatTexture.wrapT = THREE.RepeatWrapping;
+    splatTexture.repeat.set(width / 50, depth / 50);
+
+    return splatTexture;
+}
+
+let splatMap = generateSplatMap(width, depth, seed);
+
+const terrainMaterial = new THREE.ShaderMaterial({
+    vertexShader: terrainVertexShader,
+    fragmentShader: terrainFragmentShader,
+    uniforms: {
+        sandTex: { value: sandTexture },
+        grassTex: { value: grassTexture },
+        rockTex: { value: rockTexture },
+        splatMap: { value: splatMap }
+    },
+    side: THREE.DoubleSide
+});
+
+const baseMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    side: THREE.DoubleSide,
+});
+
+// use green material for terrain sides
+const greenMaterial = new THREE.MeshStandardMaterial({
+    color: 0x00ff00,
+    side: THREE.DoubleSide
+});
 
 function createTerrainSides(terrainGeometry, minHeight, baseHeight, material, segments) {
     const position = terrainGeometry.attributes.position;
@@ -130,6 +202,17 @@ function createTerrainSides(terrainGeometry, minHeight, baseHeight, material, se
     return sideMesh;
 }
 
+function getTerrainLowestPoint(geometry) {
+    const position = geometry.attributes.position;
+    let minY = Infinity;
+
+    for (let i = 0; i < position.count; i++) {
+        const y = position.getY(i);
+        if (y < minY) minY = y;
+    }
+    return minY;
+}
+
 function createTerrain(seed) {
     if (terrain) {
         scene.remove(terrain);
@@ -150,7 +233,6 @@ function createTerrain(seed) {
         terrainSides = null;
     }
 
-    // Generate terrain geometry
     const terrainGeometry = generateTerrainGeometry(
         width,
         depth,
@@ -163,30 +245,17 @@ function createTerrain(seed) {
     terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
     scene.add(terrain);
 
-    // Calculate the lowest point of the terrain
     const minHeight = getTerrainLowestPoint(terrainGeometry);
-
-    // Create base geometry
     const baseHeight = minHeight - 1;
+
     const baseGeometry = new THREE.BoxGeometry(width, 1, depth);
     base = new THREE.Mesh(baseGeometry, baseMaterial);
     base.position.y = baseHeight;
     scene.add(base);
 
-    terrainSides = createTerrainSides(terrainGeometry, minHeight, baseHeight, terrainMaterial, segmentCount);
+    // create terrain sides
+    terrainSides = createTerrainSides(terrainGeometry, minHeight, baseHeight, greenMaterial, segmentCount);
     scene.add(terrainSides);
-}
-
-function getTerrainLowestPoint(geometry) {
-    const position = geometry.attributes.position;
-    let minY = Infinity;
-
-    for (let i = 0; i < position.count; i++) {
-        const y = position.getY(i);
-        if (y < minY) minY = y;
-    }
-
-    return minY;
 }
 
 createTerrain(seed);
@@ -200,7 +269,6 @@ updateCamera();
 window.addEventListener('keydown', (event) => {
     const stepAngle = 0.05;
     const stepHeight = 5;
-
     switch (event.key) {
         case 'a':
             cameraAngle -= stepAngle;
@@ -224,8 +292,11 @@ window.addEventListener('keydown', (event) => {
 generateButton.addEventListener('click', () => {
     const inputSeed = seedInput.value.trim();
     seed = inputSeed ? parseFloat(inputSeed) : Math.random();
-    width = terrainWidthInput.value ? parseInt(terrainWidthInput.value) : 100;
-    depth = terrainDepthInput.value ? parseInt(terrainDepthInput.value) : 100;
+    width = terrainWidthInput.value ? parseInt(terrainWidthInput.value) : 200;
+    depth = terrainDepthInput.value ? parseInt(terrainDepthInput.value) : 200;
+
+    splatMap = generateSplatMap(width, depth, seed);
+    terrainMaterial.uniforms.splatMap.value = splatMap;
     createTerrain(seed);
 });
 
