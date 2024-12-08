@@ -15,7 +15,6 @@ export function generateTerrainGeometry(width, depth, segments, scale, heightMul
         position.setY(i, height);
     }
 
-    // 更新顶点数据和法线
     position.needsUpdate = true;
     geometry.computeVertexNormals();
 

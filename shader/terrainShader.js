@@ -16,7 +16,6 @@ varying vec2 vUv;
 
 void main() {
     vec4 splat = texture2D(splatMap, vUv);
-    // R对应沙地，G对应草地，B对应岩石
     float total = splat.r + splat.g + splat.b;
     if (total < 0.001) {
         total = 1.0;
