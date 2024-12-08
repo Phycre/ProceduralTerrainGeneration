@@ -27,7 +27,7 @@ void main() {
     vec4 grassColor = texture2D(grassTex, vUv);
     vec4 rockColor = texture2D(rockTex, vUv);
 
-    vec4 terrainColor = splatColor.r * sandColor +
+    vec4 terrainColor = splatColor.r +
                         splatColor.g * grassColor +
                         splatColor.b * rockColor;
 
