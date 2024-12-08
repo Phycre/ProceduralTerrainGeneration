@@ -31,7 +31,7 @@ void main() {
                         splatColor.g * grassColor +
                         splatColor.b * rockColor;
 
-    float heightFactor = (vPosition.y + 10.0) / 20.0; // Normalize height
+    float heightFactor = (vPosition.y + 5.0) / 30.0; // Normalize height
     terrainColor.rgb *= heightFactor;
 
     gl_FragColor = terrainColor;
