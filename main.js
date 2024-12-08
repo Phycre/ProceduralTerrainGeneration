@@ -1,5 +1,7 @@
 import * as THREE from './scripts/three.module.js';
 import { generateTerrainGeometry } from './scripts/terrainGenerator.js';
+import { Tree } from './treeGen/tree.js';
+import TreeOptions from './treeGen/options.js';
 
 const container = document.getElementById('canvas-container');
 const canvas = document.getElementById('canvas');
