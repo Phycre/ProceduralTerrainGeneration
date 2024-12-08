@@ -38,8 +38,7 @@ export function generateTerrainGeometry(width, depth, segments, scale, heightMul
         const baseHeight = fbmNoise(x, z, seed, 8, 0.5, 2.0); // Octaves, Persistence, Lacunarity
 
         const ridgeHeight = 1.0 - Math.abs(baseHeight);
-        const valleyHeight = Math.sin(x * 0.5) * Math.cos(z * 0.5);
-
+        const valleyHeight = Math.sin(x * 0.5) * Math.cos(z * 0.5) * perlin.noise(x * 0.1, 0, z * 0.1 + seed) * 8;
         const combinedHeight = THREE.MathUtils.lerp(baseHeight, ridgeHeight, 0.3) + 0.1 * valleyHeight;
 
         const finalHeight = combinedHeight * 50;
