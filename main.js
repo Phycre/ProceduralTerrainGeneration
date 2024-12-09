@@ -5,6 +5,7 @@ import { ImprovedNoise } from './scripts/ImprovedNoise.js';
 import { Tree } from './treeGen/tree.js';
 import TreeOptions from './treeGen/options.js';
 import { generateForest } from './scripts/forestGenerator.js';
+import { ArcballControls } from './scripts/ArcballControls.js';
 
 // load textures
 const textureLoader = new THREE.TextureLoader();
@@ -50,17 +51,9 @@ let terrain;
 let base;
 let terrainSides;
 
-let cameraAngle = 0;
-let cameraDistance = 250;
-let cameraHeight = 100;
-let isShiftPressed = false;
-
-function updateCamera() {
-    const x = Math.sin(cameraAngle) * cameraDistance;
-    const z = Math.cos(cameraAngle) * cameraDistance;
-    camera.position.set(x, cameraHeight, z);
-    camera.lookAt(0, 0, 0);
-}
+const controls = new ArcballControls(camera, renderer.domElement, scene);
+controls.enableAnimations = true;
+controls.setGizmosVisible(true); 
 
 function generateSplatData(width, depth, seed) {
     const size = 256; 
@@ -281,39 +274,10 @@ t.generate();
 t.scale.set(5, 5, 5);
 scene.add(t);
 
-updateCamera();
-
-window.addEventListener('keydown', (event) => {
-    const stepAngle = 0.05;
-    const stepHeight = 5;
-    const stepDistance = 10;
-    switch (event.key) {
-        case 'Shift':
-            isShiftPressed = !isShiftPressed;
-            break;
-        case 'a':
-            cameraAngle -= stepAngle;
-            updateCamera();
-            break;
-        case 'd':
-            cameraAngle += stepAngle;
-            updateCamera();
-            break;
-        case 'w':
-            if(isShiftPressed)
-                cameraDistance -= stepDistance;
-            else
-                cameraHeight += stepHeight;
-            updateCamera();
-            break;
-        case 's':
-            if(isShiftPressed)
-                cameraDistance += stepDistance;
-            else
-                cameraHeight -= stepHeight;
-            updateCamera();
-            break;
-    }
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 generateButton.addEventListener('click', () => {
@@ -329,6 +293,7 @@ generateButton.addEventListener('click', () => {
 
 function animate() {
     renderer.render(scene, camera);
+    controls.update();
     requestAnimationFrame(animate);
 }
 
