@@ -5,7 +5,7 @@ import { ImprovedNoise } from './scripts/ImprovedNoise.js';
 import { Tree } from './treeGen/tree.js';
 import TreeOptions from './treeGen/options.js';
 import { generateForest } from './scripts/forestGenerator.js';
-import { ArcballControls } from './scripts/ArcballControls.js';
+import { OrbitControls } from './scripts/OrbitControls.js';
 
 // load textures
 const textureLoader = new THREE.TextureLoader();
@@ -51,9 +51,8 @@ let terrain;
 let base;
 let terrainSides;
 
-const controls = new ArcballControls(camera, renderer.domElement, scene);
+const controls = new OrbitControls(camera, renderer.domElement, scene);
 controls.enableAnimations = true;
-controls.setGizmosVisible(true); 
 camera.position.set(0, 100, 300);
 controls.enableGrid = true;
 
