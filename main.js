@@ -272,12 +272,6 @@ function createTree(seed) {
         mainTree = null;
     }
 
-    childrenMultiplierInput = document.getElementById('ChildrenMultiplier');
-    gnarlinessMultiplierInput = document.getElementById('GnarlinessMultiplier');
-    branchLengthMultiplierInput = document.getElementById('BranchLengthMultiplier');
-    radiusMultiplierInput = document.getElementById('RadiusMultiplier');
-    sectionMultiplierInput = document.getElementById('SectionMultiplier');
-
     mainTree = new Tree(new TreeOptions);
     mainTree.generate();
     mainTree.scale.set(5, 5, 5);
