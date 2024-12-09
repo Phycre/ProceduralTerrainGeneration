@@ -34,7 +34,7 @@ void main() {
     // Check if the current y-position is below the threshold
     if (vPosition.y < 5.9) {
         //ice
-        terrainColor.rgb = vec3(1.0, 1.0, 1.0); 
+        terrainColor.rgb = vec3(0.75, 0.75, 1.0); 
     } else {
         float heightFactor = (vPosition.y + 5.0) / 10.0; 
         //add snow
