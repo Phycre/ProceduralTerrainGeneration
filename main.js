@@ -122,9 +122,9 @@ const baseMaterial = new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
 });
 
-// use green material for terrain sides
-const greenMaterial = new THREE.MeshStandardMaterial({
-    color: 0x00ff00,
+// use side material for terrain sides
+const sideMaterial = new THREE.MeshStandardMaterial({
+    color: 0x000000,
     side: THREE.DoubleSide
 });
 
@@ -258,7 +258,7 @@ function createTerrain(seed) {
     scene.add(base);
 
     // create terrain sides
-    terrainSides = createTerrainSides(terrainGeometry, minHeight, baseHeight, greenMaterial, segmentCount);
+    terrainSides = createTerrainSides(terrainGeometry, minHeight, baseHeight, sideMaterial, segmentCount);
     scene.add(terrainSides);
 }
 
