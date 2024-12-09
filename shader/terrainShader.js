@@ -32,9 +32,10 @@ void main() {
                         splatColor.b * rockColor;
 
     // Check if the current y-position is below the threshold
-    if (vPosition.y < 5.9) {
+    if (vPosition.y < 7.0) {
         //ice
-        terrainColor.rgb = vec3(0.75, 0.75, 1.0); 
+        gl_FragColor = vec4(0.85, 0.85, 1.0, 1); 
+        return;
     } else {
         float heightFactor = (vPosition.y + 5.0) / 10.0; 
         //add snow
