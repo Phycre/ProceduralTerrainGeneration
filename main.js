@@ -23,9 +23,12 @@ const rockTexture = textureLoader.load('textures/rock.jpg');
 
 const container = document.getElementById('canvas-container');
 const canvas = document.getElementById('canvas');
-const seedInput = document.getElementById('seedInput');
-const terrainWidthInput = document.getElementById('terrainWidth');
-const terrainDepthInput = document.getElementById('terrainDepth');
+const childrenMultiplierInput = document.getElementById('ChildrenMultiplier');
+const gnarlinessMultiplierInput = document.getElementById('GnarlinessMultiplier');
+const branchLengthMultiplierInput = document.getElementById('BranchLengthMultiplier');
+const radiusMultiplierInput = document.getElementById('RadiusMultiplier');
+const sectionMultiplierInput = document.getElementById('SectionMultiplier');
+const seedInput = document.getElementById('SeedInput');
 const generateButton = document.getElementById('generateButton');
 
 const scene = new THREE.Scene();
@@ -48,6 +51,7 @@ let seed = Math.random();
 let width = 500;
 let depth = 500;
 let terrain;
+let mainTree;
 let base;
 let terrainSides;
 
@@ -262,18 +266,31 @@ function createTerrain(seed) {
     scene.add(terrainSides);
 }
 
+function createTree(seed) {
+    if (terrain) {
+        scene.remove(mainTree);
+        mainTree = null;
+    }
+
+    childrenMultiplierInput = document.getElementById('ChildrenMultiplier');
+    gnarlinessMultiplierInput = document.getElementById('GnarlinessMultiplier');
+    branchLengthMultiplierInput = document.getElementById('BranchLengthMultiplier');
+    radiusMultiplierInput = document.getElementById('RadiusMultiplier');
+    sectionMultiplierInput = document.getElementById('SectionMultiplier');
+
+    mainTree = new Tree(new TreeOptions);
+    mainTree.generate();
+    mainTree.scale.set(5, 5, 5);
+    
+    scene.add(mainTree);
+}
+
 createTerrain(seed);
+createTree(seed);
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(0, 50, 50).normalize();
 scene.add(light);
-
-//generateForest(terrain, splatData, generateSplatData(width, depth, Math.random()), renderer, scene);
-
-let t = new Tree(new TreeOptions);
-t.generate();
-t.scale.set(5, 5, 5);
-scene.add(t);
 
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -282,14 +299,7 @@ window.addEventListener('resize', () => {
 });
 
 generateButton.addEventListener('click', () => {
-    const inputSeed = seedInput.value.trim();
-    seed = inputSeed ? parseFloat(inputSeed) : Math.random();
-    width = terrainWidthInput.value ? parseInt(terrainWidthInput.value) : 500;
-    depth = terrainDepthInput.value ? parseInt(terrainDepthInput.value) : 500;
-
-    splatMap = generateSplatMap(width, depth, seed);
-    terrainMaterial.uniforms.splatMap.value = splatMap;
-    createTerrain(seed);
+    createTree(seed);
 });
 
 function animate() {
