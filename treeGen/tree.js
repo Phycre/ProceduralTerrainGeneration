@@ -1,11 +1,13 @@
 import * as THREE from '../scripts/three.module.js'
 import {Branch} from './branch.js'
 import TreeOptions from './options.js'
+import RNG from './rng.js';
 import { getBarkTexture, getLeafTexture } from './textures.js';
 
 export class Tree extends THREE.Group{
     /**@type {TreeOptions} */ 
     options;
+
 
     constructor(options = new TreeOptions()){
         super();
@@ -17,6 +19,8 @@ export class Tree extends THREE.Group{
         this.add(this.leavesMesh);
         this.add(this.ornamentsMesh);
         this.options = options;
+
+        this.rng = new RNG(options.seed);
 
         /**@type {Branch[]} */
         this.branchQueue = [];
@@ -406,7 +410,7 @@ export class Tree extends THREE.Group{
       };
   
       createLeaf(0);
-      if(this.myRandom(1, 0) < .25){
+      if(this.myRandom(1, 0) < .15){
         this.createOrnament(origin);
       }
       
@@ -516,7 +520,7 @@ export class Tree extends THREE.Group{
     }
 
     myRandom(ceiling, floor) {
-      return (ceiling - floor) * Math.random() + floor;
+      return (ceiling - floor) * this.rng.random() + floor;
     }
 
     createLeavesGeometry() {
