@@ -51,8 +51,9 @@ let base;
 let terrainSides;
 
 let cameraAngle = 0;
-let cameraDistance = 150;
+let cameraDistance = 250;
 let cameraHeight = 100;
+let isShiftPressed = false;
 
 function updateCamera() {
     const x = Math.sin(cameraAngle) * cameraDistance;
@@ -285,7 +286,11 @@ updateCamera();
 window.addEventListener('keydown', (event) => {
     const stepAngle = 0.05;
     const stepHeight = 5;
+    const stepDistance = 10;
     switch (event.key) {
+        case 'Shift':
+            isShiftPressed = !isShiftPressed;
+            break;
         case 'a':
             cameraAngle -= stepAngle;
             updateCamera();
@@ -295,11 +300,17 @@ window.addEventListener('keydown', (event) => {
             updateCamera();
             break;
         case 'w':
-            cameraHeight += stepHeight;
+            if(isShiftPressed)
+                cameraDistance -= stepDistance;
+            else
+                cameraHeight += stepHeight;
             updateCamera();
             break;
         case 's':
-            cameraHeight -= stepHeight;
+            if(isShiftPressed)
+                cameraDistance += stepDistance;
+            else
+                cameraHeight -= stepHeight;
             updateCamera();
             break;
     }
@@ -308,8 +319,8 @@ window.addEventListener('keydown', (event) => {
 generateButton.addEventListener('click', () => {
     const inputSeed = seedInput.value.trim();
     seed = inputSeed ? parseFloat(inputSeed) : Math.random();
-    width = terrainWidthInput.value ? parseInt(terrainWidthInput.value) : 200;
-    depth = terrainDepthInput.value ? parseInt(terrainDepthInput.value) : 200;
+    width = terrainWidthInput.value ? parseInt(terrainWidthInput.value) : 500;
+    depth = terrainDepthInput.value ? parseInt(terrainDepthInput.value) : 500;
 
     splatMap = generateSplatMap(width, depth, seed);
     terrainMaterial.uniforms.splatMap.value = splatMap;
