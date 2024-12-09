@@ -29,6 +29,7 @@ const branchLengthMultiplierInput = document.getElementById('BranchLengthMultipl
 const radiusMultiplierInput = document.getElementById('RadiusMultiplier');
 const sectionMultiplierInput = document.getElementById('SectionMultiplier');
 const seedInput = document.getElementById('SeedInput');
+const ornamentInput = document.getElementById('OrnamentInput');
 const generateButton = document.getElementById('generateButton');
 
 const scene = new THREE.Scene();
@@ -304,6 +305,13 @@ function createTree(seed) {
 
     if (seedInput.value.length != 0) {
         config.seed = seedInput.value;
+    }
+    else{
+      config.seed = Math.floor(Math.random() * 100) + 1;
+    }
+
+    if (ornamentInput.value.length != 0) {
+        config.ornamentChance = ornamentInput.value;
     }
 
     mainTree = new Tree(config);

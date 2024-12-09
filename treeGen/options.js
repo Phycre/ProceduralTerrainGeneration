@@ -2,6 +2,7 @@
 export default class TreeOptions {
     constructor() {
         this.seed = 0;
+        this.ornamentChance = 0.15;
         this.type = 'deciduous';
 
         // Bark parameters

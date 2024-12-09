@@ -410,7 +410,7 @@ export class Tree extends THREE.Group{
       };
   
       createLeaf(0);
-      if(this.myRandom(1, 0) < .15){
+      if(this.myRandom(1, 0) < this.options.ornamentChance){
         this.createOrnament(origin);
       }
       
