@@ -267,12 +267,46 @@ function createTerrain(seed) {
 }
 
 function createTree(seed) {
-    if (terrain) {
-        scene.remove(mainTree);
-        mainTree = null;
+    scene.remove(mainTree);
+    mainTree = null;
+    let config = new TreeOptions();
+
+    
+    if (childrenMultiplierInput.value.length != 0) {
+        config.branch.children[0] *= childrenMultiplierInput.value;
+        config.branch.children[1] *= childrenMultiplierInput.value;
+        config.branch.children[2] *= childrenMultiplierInput.value;
     }
 
-    mainTree = new Tree(new TreeOptions);
+    if (gnarlinessMultiplierInput.value.length != 0) {
+        config.branch.gnarliness[0] *= gnarlinessMultiplierInput.value;
+        config.branch.gnarliness[1] *= gnarlinessMultiplierInput.value;
+        config.branch.gnarliness[2] *= gnarlinessMultiplierInput.value;
+    }
+
+    if (branchLengthMultiplierInput.value.length != 0) {
+        config.branch.length[0] *= branchLengthMultiplierInput.value;
+        config.branch.length[1] *= branchLengthMultiplierInput.value;
+        config.branch.length[2] *= branchLengthMultiplierInput.value;
+    }
+
+    if (radiusMultiplierInput.value.length != 0) {
+        config.branch.radius[0] *= radiusMultiplierInput.value;
+        config.branch.radius[1] *= radiusMultiplierInput.value;
+        config.branch.radius[2] *= radiusMultiplierInput.value;
+    }
+
+    if (sectionMultiplierInput.value.length != 0) {
+        config.branch.sections[0] *= sectionMultiplierInput.value;
+        config.branch.sections[1] *= sectionMultiplierInput.value;
+        config.branch.sections[2] *= sectionMultiplierInput.value;
+    }
+
+    if (seedInput.value.length != 0) {
+        config.seed = seedInput.value;
+    }
+
+    mainTree = new Tree(config);
     mainTree.generate();
     mainTree.scale.set(5, 5, 5);
     
