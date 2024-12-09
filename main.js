@@ -54,6 +54,8 @@ let terrainSides;
 const controls = new ArcballControls(camera, renderer.domElement, scene);
 controls.enableAnimations = true;
 controls.setGizmosVisible(true); 
+camera.position.set(0, 100, 300);
+controls.enableGrid = true;
 
 function generateSplatData(width, depth, seed) {
     const size = 256; 
